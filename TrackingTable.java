@@ -21,25 +21,32 @@ public class TrackingTable {
 				Range existingRange = new Range();
 				existingRange.hi = table.get(i).trackingNumHigh;
 				existingRange.lo = table.get(i).trackingNumLow;
-				if (existingRange.classify(range).equals(Relation.SUBSET)) {
+				if (range.classify(existingRange).equals(Relation.SUBSET)) {
+					System.out.println("Calling subset function");
 					subsetRecord(tr,i);
-				} else if (existingRange.classify(range).equals(
+				} else if (range.classify(existingRange).equals(
 						Relation.SUPERSET)) {
+					System.out.println("Calling superSet function");
 					supersetRecord(tr, i);
-				} else if (existingRange.classify(range).equals(
+				} else if (range.classify(existingRange).equals(
 						Relation.LESSOVERLAP)) {
-					lessOverlappingRecord(tr);
-				} else if (existingRange.classify(range).equals(
+					System.out.println("Calling lessOverlap function");
+					lessOverlappingRecord(tr,i);
+				} else if (range.classify(existingRange).equals(
 						Relation.MOREOVERLAP)) {
-					moreOverlappingRecord(tr);
-				} else if (existingRange.classify(range).equals(
+					System.out.println("Calling moreOverlap function");
+					moreOverlappingRecord(tr,i);
+				} else if (range.classify(existingRange).equals(
 						Relation.LESSDISJOINT)) {
-					lessDisjointRecord(tr);
-				} else if (existingRange.classify(range)
+					System.out.println("Calling lessDisjointFunction function");
+					lessDisjointRecord(tr,i);
+				} else if (range.classify(existingRange)
 						.equals(Relation.MOREDISJOINT)) {
-					moreDisjointRecord(tr);
+					System.out.println("Calling moreDisjointFunction function");
+					moreDisjointRecord(tr,i);
 				} else if (existingRange.classify(range)
 						.equals(Relation.SAME)) {
+					System.out.println("Calling sameRecord function");
 					sameRecord(tr,i);
 				}
 
@@ -53,7 +60,7 @@ public class TrackingTable {
 		table.remove(i);
 		int high=existingTR.trackingNumHigh;
 		existingTR.trackingNumHigh=tr.trackingNumLow-1;
-		table.add(existingTR);
+		table.add(new TrackingRecord(existingTR.trackingNumLow, existingTR.trackingNumHigh,existingTR.statusCode,existingTR.transferCode));
 		table.add(tr);
 		existingTR.trackingNumLow=tr.trackingNumHigh+1;
 		existingTR.trackingNumHigh=high;
@@ -64,20 +71,43 @@ public class TrackingTable {
 		table.add(tr);
 	}
 
-	public void lessOverlappingRecord(TrackingRecord tr) {
-
+	public void lessOverlappingRecord(TrackingRecord tr, int i) {
+		TrackingRecord existingTR = table.get(i);
+		table.remove(i);
+		existingTR.trackingNumLow=tr.trackingNumHigh+1;
+		table.add(tr);
+		table.add(existingTR);
 	}
-	public void moreOverlappingRecord(TrackingRecord tr) {
-
+	public void moreOverlappingRecord(TrackingRecord tr,int i) {
+		TrackingRecord existingTR = table.get(i);
+		table.remove(i);
+		existingTR.trackingNumHigh=tr.trackingNumLow-1;
+		table.add(existingTR);
+		table.add(tr);
 	}
-	public void lessDisjointRecord(TrackingRecord tr) {
-
+	public void lessDisjointRecord(TrackingRecord tr, int i) {
+		TrackingRecord existingTR = table.get(i);
+		if((tr.trackingNumHigh+1)==existingTR.trackingNumLow){
+			if((existingTR.statusCode.equals(tr.statusCode))&&(existingTR.transferCode==tr.transferCode)){
+				table.remove(i);
+				tr.trackingNumHigh=existingTR.trackingNumHigh;
+				table.add(tr);
+			}
+		}else{
+		table.add(tr);
+		}
 	}
-	public void moreDisjointRecord(TrackingRecord tr) {
-
-	}
-	public void mergeRecords(TrackingRecord tr1, TrackingRecord tr2) {
-
+	public void moreDisjointRecord(TrackingRecord tr, int i) {
+		TrackingRecord existingTR = table.get(i);
+		if((existingTR.trackingNumHigh+1)==tr.trackingNumLow){
+			if((existingTR.statusCode.equals(tr.statusCode))&&(existingTR.transferCode==tr.transferCode)){
+				table.remove(i);
+				tr.trackingNumLow=existingTR.trackingNumLow;
+				table.add(tr);
+			}
+		}else{
+		table.add(tr);
+		}
 	}
 	public void sameRecord(TrackingRecord tr, int i) {
 		table.remove(i);
@@ -94,7 +124,7 @@ public class TrackingTable {
 	public static void main(String args[]) throws IOException{
 		String input;
 		Scanner scanner = new Scanner(System.in);
-		System.out.print("Enter Input\n");
+		System.out.println("Enter Input");
 		input = scanner.nextLine();
 		String record[];
 		TrackingTable trackingMatrix=new TrackingTable();
