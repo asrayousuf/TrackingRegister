@@ -9,34 +9,24 @@ public class TrackingRecord {
 	String statusCode;
 	int transferCode;
 	boolean delete;
-	public TrackingRecord(int low, int high, String status, int transferCd, boolean deleteStatus){
-		int trackingNumLow=low;
-		int trackingNumHigh=high;
-		String statusCode=status;
-		int transferCode=transferCd;
-		boolean delete=deleteStatus;
+	
+	public TrackingRecord(int low, int high, String status, int transferCd){
+		this.trackingNumLow=low;
+		this.trackingNumHigh=high;
+		this.statusCode=status;
+		this.transferCode=transferCd;
+		this.delete=false;
 	}
 	public TrackingRecord(){
-		int trackingNumLow=0;
-		int trackingNumHigh=0;
-		String statusCode= "";
-		int transferCode=0;
-		boolean delete=false;
+		this.trackingNumLow=0;
+		this.trackingNumHigh=0;
+		this.statusCode= "";
+		this.transferCode=0;
+		this.delete=false;
 	}
 	
-	public static void main(String args[]) throws IOException{
-		String input;
-		Scanner scanner = new Scanner(System.in);
-		TrackingRecord trackingRecord = new TrackingRecord();
-		input = scanner.next();
-		String record[];
-		TrackingTable tt=new TrackingTable();
-		while (!input.equals("0")) {
-			input = scanner.next();
-			record=input.split(" ");
-			TrackingRecord tr=new TrackingRecord(Integer.parseInt(record[0]),Integer.parseInt(record[1]),record[2],Integer.parseInt(record[3]),false);
-			tt.updateTable(tr);
-		}	
+	public String getRecord(){
+		return this.trackingNumLow+" "+this.trackingNumHigh+" "+this.statusCode+" "+this.transferCode;
 	}
 
 }

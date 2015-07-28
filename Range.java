@@ -4,7 +4,7 @@ package trackingRegister;
 	 * are integers.                                       *
 	 * ----------------------------------------------------*/
 	public class Range {
-
+		
 	    protected int lo;
 	    protected int hi;
 
